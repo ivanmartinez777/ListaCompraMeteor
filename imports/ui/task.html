@@ -1,0 +1,20 @@
+<template name="producto">
+  <li class="{{#if checked}}checked{{/if}}">
+    <button class="delete">&times;</button>
+    {{#if currentUser}}<div class="pedido"><input type="checkbox" checked="{{checked}}" class="toggle-checked" /></div>{{/if}}
+    <div class="pedido"><strong>{{text}}</strong></div>
+   <div class="pedido">{{quantity}}</div> <div class="pedido">{{place}}</div> - <div class="pedido"><span id="nombre">{{username}}</span></div></li>
+ 
+
+</template>
+
+<template name="comprado">
+  <li class="comprado">
+    <button class="delete">&times;</button>
+    
+    <div class="pedido"><strong>{{text}}</strong></div>
+   <div class="pedido">{{quantity}}</div> <div class="pedido">{{place}}</div> - <div class="pedido"><span id="nombre">{{username}}</span></div><div id="comprador">Comprador:{{comprador}}</div></li>
+ 
+
+</template>
+

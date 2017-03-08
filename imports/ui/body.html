@@ -1,0 +1,79 @@
+<body>
+
+  <div class="container">
+
+    <header>
+
+      <h1>Lista de la compra</h1>
+
+            <label class="hide-completed">
+
+                <input type="checkbox" />
+                 Hide Completed Tasks
+
+            </label>
+
+            {{> loginButtons}}
+
+            {{> listas}}
+    </header>
+
+    {{ >prod}}
+
+    <ul>
+      <h2> Productos por Comprar </h2>
+      {{#each tasks}}
+
+        {{> producto}}
+
+      {{/each}}
+
+    </ul>
+
+    
+
+      <h2> Productos Comprados </h2>
+      <ul>
+      {{#each comprados}}
+
+        {{> comprado}}
+
+      {{/each}}
+
+    </ul>
+
+   
+
+  </div>
+
+</body>
+
+ 
+
+<template name="listas">
+  <form name="agrupar">
+       <div class="agrupar"><h3>General({{incompleteCount}})</h3><input type="radio" name="place" value="Todo" checked></div>
+
+      <div class="agrupar"><h4>Fruteria ({{incompleteCountFruteria}})</h4><input type="radio" name="place" value="Fruteria"></div>
+
+      <div class="agrupar"><h4>Congelados ({{incompleteCountCongelados}})</h4><input type="radio" name="place" value="Congelados"></div>
+
+      <div class="agrupar"><h4>Supermercado ({{incompleteCountSuper}})</h4><input type="radio" name="place" value="Super"></div>
+     
+      </form>
+</template>
+
+
+<template name="prod">
+
+      {{#if currentUser}}
+      <form class="new-product">
+           <input type="text" name="text" placeholder="Nuevo producto" id="nombreProd" />
+            <input type="number" name="quantity" id="quantity">
+            <div class="agrupar2"><input type="radio" name="place" value="Fruteria" checked>Fruteria</div>
+            <div class="agrupar2"><input type="radio" name="place" value="Congelados">Congelados</div>
+           <div class="agrupar2"><input type="radio" name="place" value="Super">Supermercado</div>
+           <input type="submit" value="aceptar" id="botonListar">
+      </form>
+       {{/if}}
+</template>
