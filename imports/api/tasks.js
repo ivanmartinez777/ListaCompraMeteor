@@ -34,6 +34,8 @@ Meteor.methods({
 
       place,
 
+      checked: false,
+
       createdAt: new Date(),
 
       owner: this.userId,
@@ -58,10 +60,8 @@ Meteor.methods({
       alert("No puede borrar las comandas de otra persona")
     }else{
 
- 
-
     Productos.remove(prodId);
-  }
+    }
   },
 
   'productos.setChecked'(prodId, setChecked) {

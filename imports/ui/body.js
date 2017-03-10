@@ -8,66 +8,78 @@ import { Productos } from '../api/tasks.js';
 import './task.js';
 import './body.html';
 
+
  Template.body.onCreated(function bodyOnCreated() {
 
   this.state = new ReactiveDict();
-  this.nuevo = new ReactiveDict();
+  const instance = Template.instance();
+  instance.state.set("place", "Todo");
+  //es necesario asignar este valor en instance.state porque si no, no me 
+  //arrancaa la template de productos
 });
 
 Template.body.helpers({
 
   tasks() {
     const instance = Template.instance();
-   /* if (instance.state.get('hideCompleted')) {
+    var place = instance.state.get('place');
+    
+    //Seleccionado cualquier "place" , excepto "general, y "hideCompleted" 
+    if (place !== "Todo" && instance.state.get('hideCompleted') ){
 
-      // If hide completed is checked, filter tasks
-    // Show newest tasks at the top
+    return Productos.find({place : place, checked: { $ne: true }},{sort: {createdAt: -1}});
 
-    return Productos.find({ checked: { $ne: true } }, { sort: { createdAt: -1 } });
-    }*/
-
-    if(instance.nuevo.get('Fruteria') && instance.state.get('hideCompleted')){
-      console.log('fruteria');
-      return Productos.find({ place: 'Fruteria',checked: { $ne: true }  }, { sort: { createdAt: -1 } });
-    }else if(instance.nuevo.get('Fruteria')){
-      console.log('congelados');
-       return Productos.find({ place: 'Fruteria' }, { sort: { createdAt: -1 } });
     }
 
-    //Congelados
-    else if(instance.nuevo.get('Congelados') && instance.state.get('hideCompleted')){
-     
-      return Productos.find({ place: 'Congelados',checked: { $ne: true }  }, { sort: { createdAt: -1 } });
-    }else if(instance.nuevo.get('Congelados')){
-     
-       return Productos.find({ place: 'Congelados' }, { sort: { createdAt: -1 } });
+    //Seleccionado cualquier "place" sin seleccionar "hideCompleted"
+    else if(place !== "Todo"){
+
+      return Productos.find({place : place},{sort: {createdAt: -1}});
+
     }
 
-    //Super
-     else if(instance.nuevo.get('Super') && instance.state.get('hideCompleted')){
-     
-      return Productos.find({ place: 'Super',checked: { $ne: true }  }, { sort: { createdAt: -1 } });
-    }else if(instance.nuevo.get('Super')){
-     
-       return Productos.find({ place: 'Super' }, { sort: { createdAt: -1 } });
+    //Seleccionado "General" y "hideCompleted"
+    else if(place === "Todo" && instance.state.get('hideCompleted') ) {
+
+    return Productos.find({checked: { $ne: true }},{sort: {createdAt: -1}});
+
     }
 
-    //Todo
-     else if(instance.state.get('hideCompleted')){
-      console.log('todo');
-      return Productos.find({ checked: { $ne: true } }, { sort: { createdAt: -1 } });
-    }else{
-     
-      return Productos.find({}, { sort: { createdAt: -1 } });
+    //Seleccionado sólo "General"
+    else{
+
+      return Productos.find({}, { sort: { createdAt: -1 } });;
+    }
+
+
    
-  }
+ 
    },
   comprados() {
        
-
+    //Devuelve los productos comprados
     return Productos.find({ checked: { $eq: true } }, { sort: { comprado: -1 } });
     
 },
+
+allCount: function(){
+   var numero =  Productos.find({ checked: { $eq: false } }).count();
+    var prod = false;
+    if (numero !== 0){
+      prod = true;
+    }
+    return prod;
+},
+compradosCount: function(){
+  var numero =  Productos.find({ checked: { $eq: true } }).count();
+    var prod = false;
+    if (numero !== 0){
+      prod = true;
+    }
+    return prod;
+}
+
+//Con las dos funciones anteriores, se pueden hacer condicionales en las templates
 
 });
  Template.listas.helpers({
@@ -87,9 +99,12 @@ Template.body.helpers({
 
 },
   incompleteCount(){
+
      return Productos.find({$and:[{checked: {$ne: true}}]}).count();
 
-  }
+  },
+
+
 
 });
  
@@ -124,8 +139,6 @@ Template.body.events({
 
     Meteor.call('productos.insert', text, quantity, place);
 
- 
-
     // Clear form
 
 
@@ -139,42 +152,16 @@ Template.body.events({
   'change .hide-completed input'(event,instance) {
 
     instance.state.set('hideCompleted', event.target.checked);
-    console.log(instance);
+   
   },
 
   'change [name=agrupar]': function(event, instance){
         var inventar = $(event.target).val();
         
+        instance.state.set("place", inventar);
 
-        if (inventar == "Fruteria"){
-        instance.nuevo.set('Fruteria', event.target.checked);
-        instance.nuevo.set('Congelados', false);
-        instance.nuevo.set('Super', false);
-        instance.nuevo.set('Todo', false);
-        
-     
-        }
-         else if(inventar == "Congelados"){
-        instance.nuevo.set('Fruteria', false );
-        instance.nuevo.set('Congelados', event.target.checked);
-        instance.nuevo.set('Super', false);
-        instance.nuevo.set('Todo', false);
-    
-         }
-         else if(inventar == "Super"){
-        instance.nuevo.set('Fruteria', false );
-        instance.nuevo.set('Congelados', false );
-        instance.nuevo.set('Super', event.target.checked);
-        instance.nuevo.set('Todo', false);
-       
-        }
-         else if(inventar == "Todo"){
-        instance.nuevo.set('Fruteria', false );
-        instance.nuevo.set('Congelados', false );
-        instance.nuevo.set('Super', false);
-        instance.nuevo.set('Todo', event.target.checked);;
-         
+
       }
 
-  }
+ 
 });

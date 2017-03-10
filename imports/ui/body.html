@@ -20,19 +20,25 @@
 
     {{ >prod}}
 
+  {{#if allCount }}
+  <h2> Productos por Comprar </h2>
+  {{else }}
+  <h2> No hay productos por comprar en la lista</h2>
+  {{/if}}
     <ul>
-      <h2> Productos por Comprar </h2>
+      
       {{#each tasks}}
 
         {{> producto}}
 
       {{/each}}
-
+  
     </ul>
-
+  
     
-
-      <h2> Productos Comprados </h2>
+   {{#if compradosCount }}
+   <h2> Historial de  compras </h2>
+  {{/if}}
       <ul>
       {{#each comprados}}
 
@@ -40,7 +46,7 @@
 
       {{/each}}
 
-    </ul>
+    </ul>   
 
    
 
